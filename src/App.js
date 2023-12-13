@@ -1,59 +1,34 @@
 import React, { useState } from 'react';
+
 import AddBookForm from './components/AddBookForm';
 import BookList from './components/BookList';
-import apiService from './services/apiService';
 
 function App() {
-  const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [books, setBooks] = useState([
+    { id: 1, title: 'Book 1', description: 'Description for Book 1' },
+    { id: 2, title: 'Book 2', description: 'Description for Book 2' },
+  ]);
 
-  async function loadBooks() {
-    try {
-      setLoading(true);
-      setError(null);
-      const booksData = await apiService.getBooks();
-      setBooks(booksData);
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  }
+  const handleAddBook = (newBook) => {
+    setBooks((prevBooks) => [...prevBooks, { ...newBook, id: prevBooks.length + 1 }]);
+  };
 
-  async function handleAddBook(newBook) {
-    try {
-      await apiService.addBook(newBook);
-      await loadBooks();
-    } catch (error) {
-      setError(error.message);
-    }
-  }
+  const handleDeleteBook = (bookId) => {
+    setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
+  };
 
-  async function handleDeleteBook(bookId) {
-    try {
-      await apiService.deleteBook(bookId);
-      await loadBooks();
-    } catch (error) {
-      setError(error.message);
-    }
-  }
-
-  async function handleEditBook(editedBook) {
-    try {
-      await apiService.updateBook(editedBook);
-      await loadBooks();
-    } catch (error) {
-      setError(error.message);
-    }
-  }
+  const handleEditBook = (editedBook) => {
+    setBooks((prevBooks) =>
+      prevBooks.map((book) => (book.id === editedBook.id ? editedBook : book))
+    );
+  };
 
   return (
     <div className="App">
       <header className="App-header">
         <AddBookForm onAddBook={handleAddBook} />
-        {error && <p>Error: {error}</p>}
-        {loading ? <p>Loading...</p> : <BookList books={books} onDeleteBook={handleDeleteBook} onEditBook={handleEditBook} />}
+        <BookList books={books} onDeleteBook={handleDeleteBook} onEditBook={handleEditBook} />
+        {/* Другие компоненты и код приложения */}
       </header>
     </div>
   );
