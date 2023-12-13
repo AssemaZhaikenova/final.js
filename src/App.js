@@ -1,5 +1,3 @@
-// Ваш файл App.js
-
 import React, { useState, useEffect } from 'react';
 import AddBookForm from './components/AddBookForm';
 import BookList from './components/BookList';
@@ -11,6 +9,7 @@ function App() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    // Код, который выполнится при монтировании компонента
     loadBooks();
   }, []); // Пустой массив зависимостей означает, что эффект будет выполняться только при монтировании компонента
 
